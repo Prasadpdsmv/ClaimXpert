@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ClaimXpert</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Poppins;
+      background: #F5F7FA;
+      display: flex
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 20px;
+      background: linear-gradient(180deg, #0B2447, #1B3C6D);
+      overflow-y: auto;
+      color: #fff;
+    }
+
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      flex: 1;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px
+    }
+
+    .filters input,
+    .filters select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc
+    }
+
+    .table-container {
+      display: flex
+    }
+
+    .table-box {
+      flex: 1;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #eee
+    }
+
+    tr:hover {
+      background: #f1f1f1;
+      cursor: pointer
+    }
+
+    .badge {
+      padding: 5px 8px;
+      border-radius: 6px
+    }
+
+    .pending {
+      background: #FFE5B4
+    }
+
+    .approved {
+      background: #C8E6C9
+    }
+
+    .rejected {
+      background: #FFCDD2
+    }
+
+    .right {
+      width: 350px;
+      margin-left: 15px
+    }
+
+    .panel {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px
+    }
+
+    .user-panel {
+      background: #fafcfa;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      width: 350px;
+      box-sizing: border-box;
+
+    }
+
+    .timeline-item {
+      border-left: 3px solid green;
+      padding-left: 10px;
+      margin-bottom: 10px
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer
+    }
+
+    .approve {
+      background: #28a745
+    }
+
+    .reject {
+      background: #dc3545
+    }
+
+    .pagination {
+      margin-top: 10px
+    }
+
+    .pagination button {
+      margin: 3px;
+      padding: 6px 10px
+    }
+
+    .logo {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .menu-title {
+      font-size: 12px;
+      color: #9FB3C8;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #E3ECF5;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.active {
+      background: rgba(255, 255, 255, 0.2);
+      font-weight: 500;
+    }
+
+    .menu-item span {
+      font-size: 18px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+
+    <h2 class="logo">ClaimXpert</h2>
+
+    <ul class="menu">
+
+      <li class="menu-item" onclick="openDashboard()">
+        <span>🏠</span> Dashboard
+      </li>
+
+      <p class="menu-title">CLAIMS</p>
+
+      <li class="menu-item" onclick="openClaims()">
+        <span>📄</span> All Claims
+      </li>
+
+      <li class="menu-item" onclick="openModal()">
+        <span onclick="openModal()">➕</span> New Claim
+      </li>
+
+      <li class="menu-item">
+        <span>👤</span> Assigned Claims
+      </li>
+
+      <li class="menu-item">
+        <span>⏳</span> Pending Actions
+      </li>
+
+      <li class="menu-item">
+        <span>✅</span> Closed Claims
+      </li>
+
+      <li class="menu-item">
+        <span>❌</span> Rejected Claims
+      </li>
+
+      <p class="menu-title">SETTLEMENT</p>
+
+      <li class="menu-item">
+        <span>📦</span> Settlements
+      </li>
+
+      <li class="menu-item">
+        <span>✔️</span> Approvals
+      </li>
+      <!--<li class="menu-item" onclick="openPersonalActivity()">
+        <span>📅</span> Personal Activity
+      </li>-->
+      <a href="calender.html" target="_blank" class="menu-item">
+        📅 Personal Activity
+      </a>
+      
+
+    </ul>
+
+  </div>
+
+  <div class="main">
+
+    <div id="claimsSection">
+
+      <div class="header">
+        <h1 id="pageTitle"></h1>
+        <!--<h2>Claims Settlement</h2> -->
+
+        <div>
+          <input id="search" placeholder="Search by name">
+        </div>
+      </div>
+      <div id="userPage" style="
+display:none;
+gap:40px;
+align-items:flex-start;
+padding:20px;
+">
+
+        <!-- ✅ USER REGISTRATION -->
+        <div class="user-panel" style="width:400px;">
+
+          <h2>User Registration</h2>
+
+          <form id="userForm">
+
+            <input type="text" id="username" placeholder="Username" required style="width:95%;padding:10px;"><br><br>
+
+            <input type="email" id="email" placeholder="Email" required style="width:95%;padding:10px;"><br><br>
+
+            <input type="password" id="password" placeholder="Password" required
+              style="width:95%;padding:10px;"><br><br>
+
+            <select id="role" required style="width:100%;padding:10px;">
+              <option value="">Select Role</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="USER">USER</option>
+              <option value="MANAGER">MANAGER</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit" style="
+            padding:10px 20px;
+            background:#0B2447;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            ">
+              Register
+            </button>
+
+          </form>
+
+          <p id="userMsg"></p>
+
+        </div>
+
+
+        <!-- ✅ LOGIN -->
+        <div id="loginPanel" class="user-panel" style="width:350px;">
+
+          <h2>Login</h2>
+
+          <form id="loginForm">
+
+            <input type="text" id="loginUsername" placeholder="Username" required
+              style="width:95%;padding:10px;margin-bottom:15px;">
+
+            <input type="password" id="loginPassword" placeholder="Password" required
+              style="width:95%;padding:10px;margin-bottom:15px;">
+
+            <button type="submit" style="
+            padding:10px 20px;
+            background:#0B2447;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            ">
+              Login
+            </button>
+
+          </form>
+
+          <p id="loginMsg"></p>
+
+        </div>
+
+      </div>
+
+      <!-- CARDS -->
+      <div class="cards">
+        <div class="card">Total: <span id="total"></span></div>
+        <div class="card">Pending: <span id="pending"></span></div>
+        <div class="card">Approved: <span id="approved"></span></div>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="filters">
+        <select id="statusFilter">
+          <option value="">All</option>
+          <option>Pending</option>
+          <option>Approved</option>
+          <option>Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-container">
+
+        <div class="table-box">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+
+            <tbody id="tbody"></tbody>
+
+          </table>
+
+          <div class="pagination" id="pagination"></div>
+
+        </div>
+
+        <div class="right">
+
+          <!-- CLAIM DETAILS -->
+          <div class="panel" id="claimPanel">
+            <h3>Claim Details</h3>
+
+            <div id="details">Select claim</div>
+
+            <br>
+
+            <button class="btn approve" onclick="approve()">Approve</button>
+            <button class="btn reject" onclick="reject()">Reject</button>
+          </div>
+
+          <!-- SETTLEMENT -->
+          <div class="panel" id="settlementPanel">
+            <h3>Settlement Summary</h3>
+            <p>Assessment: ₹ 1,25,000</p>
+            <p>Deductions: ₹ 0</p>
+            <p><b>Net: ₹ 1,25,000</b></p>
+          </div>
+
+          <!-- TIMELINE -->
+          <div class="panel" id="timelinePanel">
+            <h3>Activity Timeline</h3>
+
+            <div class="timeline-item">Claim Registered</div>
+            <div class="timeline-item">Documents Verified</div>
+            <div class="timeline-item">Assessment Completed</div>
+            <div class="timeline-item">Pending Settlement</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    let allData = [];
+    let selectedId;
+    let page = 1;
+    const size = 5;
+
+    function fetchData() {
+
+      fetch('/api/claims')
+        .then(r => r.json())
+        .then(data => {
+          allData = data;
+          applyFilters();
+        });
+
+    }
+
+    function applyFilters() {
+
+      let data = allData;
+
+      let status = document.getElementById('statusFilter').value;
+      let search = document.getElementById('search').value.toLowerCase();
+
+      if (status) {
+        data = data.filter(d => d.status === status);
+      }
+
+      if (search) {
+        data = data.filter(d => d.claimantName.toLowerCase().includes(search));
+      }
+
+      render(data);
+
+    }
+
+    document.getElementById("statusFilter").onchange = applyFilters;
+    document.getElementById("search").onkeyup = applyFilters;
+
+    function render(data) {
+
+      document.getElementById('total').innerText = data.length;
+
+      document.getElementById('pending').innerText =
+        data.filter(d => d.status === 'Pending').length;
+
+      document.getElementById('approved').innerText =
+        data.filter(d => d.status === 'Approved').length;
+
+      let start = (page - 1) * size;
+      let paged = data.slice(start, start + size);
+
+      let rows = '';
+
+      paged.forEach(c => {
+
+        let cls = c.status === 'Pending'
+          ? 'pending'
+          : c.status === 'Approved'
+            ? 'approved'
+            : 'rejected';
+
+        rows += `
+<tr onclick="selectClaim('${c.claimId}','${c.claimantName}','${c.status}','${c.amount}')">
+<td>${c.claimId}</td>
+<td>${c.claimantName}</td>
+<td><span class="badge ${cls}">${c.status}</span></td>
+<td>₹ ${c.amount}</td>
+</tr>`;
+
+      });
+
+      document.getElementById('tbody').innerHTML = rows;
+
+      let pages = Math.ceil(data.length / size);
+      let pHtml = '';
+
+      for (let i = 1; i <= pages; i++) {
+        pHtml += `<button onclick="goPage(${i})">${i}</button>`;
+      }
+
+      document.getElementById('pagination').innerHTML = pHtml;
+
+    }
+
+    function goPage(p) {
+      page = p;
+      applyFilters();
+    }
+
+    function selectClaim(id, name, status, amount) {
+
+      selectedId = id;
+
+      document.getElementById('details').innerHTML =
+        `<b>${id}</b><br>${name}<br>${status}<br>₹ ${amount}`;
+
+    }
+
+    function approve() {
+      fetch(`/api/claims/${selectedId}/approve`, { method: 'PUT' })
+        .then(fetchData);
+    }
+
+    function reject() {
+      fetch(`/api/claims/${selectedId}/reject`, { method: 'PUT' })
+        .then(fetchData);
+    }
+
+    fetchData();
+
+    function openDashboard() {
+
+      document.querySelector(".cards").style.display = "none";
+      document.querySelector(".filters").style.display = "none";
+      document.querySelector(".table-box").style.display = "none";
+
+      // Hide Right Panels
+      document.getElementById("claimPanel").style.display = "none";
+      document.getElementById("settlementPanel").style.display = "none";
+      document.getElementById("timelinePanel").style.display = "none";
+
+      // Show User Registration
+      // document.getElementById("userPage").style.display = "block";
+      //document.getElementById("loginPanel").style.display = "block";
+      document.getElementById("userPage").style.display = "flex";
+      document.getElementById("loginPanel").style.display = "flex";
+      document.getElementById("pageTitle").innerText = "Dashboard";
+
+
+    }
+
+
+    function openClaims() {
+
+      document.querySelector(".cards").style.display = "flex";
+      document.querySelector(".filters").style.display = "flex";
+      document.querySelector(".table-container").style.display = "flex";
+
+      document.querySelector(".table-box").style.display = "block";
+
+      // fetchData()
+
+      console.log("Fetching data...");
+
+      document.getElementById("claimPanel").style.display = "block";
+      document.getElementById("settlementPanel").style.display = "block";
+      document.getElementById("timelinePanel").style.display = "block";
+
+      document.getElementById("userPage").style.display = "none";
+      document.getElementById("pageTitle").innerText = "Claims Settlement";
+      document.getElementById("loginPanel").style.display = "none";
+
+    }
+
+    document.getElementById("userForm").addEventListener("submit", function (e) {
+
+      e.preventDefault();
+
+      const user = {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        role: document.getElementById("role").value
+      };
+
+      fetch("http://localhost:8082/api/users/register", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(user)
+
+      })
+
+        .then(res => {
+
+          if (!res.ok) {
+            throw new Error("Failed");
+          }
+
+          return res.json();
+
+        })
+
+        .then(() => {
+
+          document.getElementById("userMsg").innerText =
+            "✅ User Registered Successfully";
+
+          document.getElementById("userForm").reset();
+
+        })
+
+        .catch(() => {
+
+          document.getElementById("userMsg").innerText =
+            "❌ Registration Failed";
+
+        });
+
+    });
+
+    function openModal() {
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function addClaim() {
+
+      const claim = {
+        claimId: document.getElementById("cid").value,
+        claimantName: document.getElementById("name").value,
+        status: document.getElementById("statusInput").value,
+        amount: parseFloat(document.getElementById("amount").value)
+      };
+
+      fetch("/api/claims", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(claim)
+
+      })
+
+        .then(() => {
+
+          alert("Claim Added ✅");
+          resetClaimForm();
+          closeModal();
+
+          fetchData();
+
+        });
+
+    }
+
+    function resetClaimForm() {
+      const form = document.getElementById("claimForm");
+      if (form) {
+        form.reset();
+      } else {
+        // fallback
+        document.getElementById("cid").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("statusInput").value = "Pending";
+        document.getElementById("amount").value = "";
+      }
+    }
+    function openPersonalActivity() {
+      window.location.href = "calender.html";
+    }
+    function handleTokenResponse(resp) {
+
+      if (resp.error) {
+        console.error(resp);
+        return;
+      }
+
+      // ✅ Store login flag
+      localStorage.setItem("google_logged_in", "true");
+
+      document.getElementById('signout_button').style.display = 'inline';
+
+      loadCalendarEvents();
+    }
+    window.onload = function () {
+
+      const isLoggedIn = localStorage.getItem("google_logged_in");
+
+      if (isLoggedIn === "true") {
+
+        // ✅ silently request token (no popup)
+        tokenClient.requestAccessToken({ prompt: '' });
+
+      }
+    };
+
+
+  </script>
+
+  <div id="modal" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+">
+
+    <div style="
+background:white;
+padding:20px;
+border-radius:10px;
+width:300px;
+">
+
+      <h3>Add New Claim</h3>
+
+      <input id="cid" placeholder="Claim ID"><br><br>
+
+      <input id="name" placeholder="Claimant Name"><br><br>
+
+      <select id="statusInput">
+        <option>Pending</option>
+        <option>Approved</option>
+        <option>Rejected</option>
+      </select>
+
+      <br><br>
+
+      <input id="amount" placeholder="Amount"><br><br>
+
+      <button onclick="addClaim()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
