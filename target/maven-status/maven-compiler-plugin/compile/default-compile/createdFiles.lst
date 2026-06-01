@@ -1,10 +1,10 @@
-com\claimxpert\repository\UserRepository.class
 com\claimxpert\controller\ClaimController.class
 com\claimxpert\service\ClaimService.class
 com\claimxpert\controller\UserController.class
-com\claimxpert\entity\User.class
 com\claimxpert\repository\ClaimRepository.class
 com\claimxpert\Application.class
 com\claimxpert\entity\Claim.class
-com\claimxpert\config\SecurityConfig.class
 com\claimxpert\service\UserService.class
+com\claimxpert\repository\UserRepository.class
+com\claimxpert\entity\User.class
+com\claimxpert\config\SecurityConfig.class

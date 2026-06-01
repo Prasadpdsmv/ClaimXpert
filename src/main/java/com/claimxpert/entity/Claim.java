@@ -3,6 +3,7 @@ package com.claimxpert.entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
 public class Claim {
 
