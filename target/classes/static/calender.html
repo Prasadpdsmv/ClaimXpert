@@ -4,6 +4,54 @@
 <head>
   <title>Google Calendar API Quickstart</title>
   <meta charset="utf-8" />
+  <style>
+    .panel {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px
+    }
+
+    .event-card {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid #4CAF50;
+    }
+
+    .panel,
+    .user-panel {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+
+    body {
+      background-color: #f4f6f8;
+      font-family: Arial;
+    }
+
+
+    .user-panel {
+      background: #fafcfa;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      width: 350px;
+      box-sizing: border-box;
+
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .events-panel {
+      flex: 1;
+    }
+  </style>
 </head>
 
 <body>
@@ -14,7 +62,37 @@
   <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
   <button onclick="goBack()">⬅ Back to Dashboard</button>
 
-  <pre id="content" style="white-space: pre-wrap;"></pre>
+  <div class="container">
+
+    <!-- LEFT SIDE → Create Event -->
+    <div id="CreateEventPanel" class="user-panel">
+
+      <h3>➕ Create New Event</h3>
+
+      <input type="text" id="title" placeholder="Event Title"><br><br>
+
+      <label>Start Time</label>
+      <input type="datetime-local" id="start"><br><br>
+
+      <label>End Time</label>
+      <input type="datetime-local" id="end"><br><br>
+
+      <input type="email" id="attendees" placeholder="Attendee Email"><br><br>
+
+      <button onclick="createCalendarEvent()">Create Event</button>
+
+    </div>
+
+    <!-- RIGHT SIDE → Events -->
+    <div class="panel events-panel">
+      <h3>📅 Events</h3>
+      <div id="content"></div>
+    </div>
+
+  </div>
+
+
+
 
   <script type="text/javascript">
     /* exported gapiLoaded */
@@ -31,7 +109,7 @@
 
     // Authorization scopes required by the API; multiple scopes can be
     // included, separated by spaces.
-    const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+    const SCOPES = 'https://www.googleapis.com/auth/calendar';
 
     let tokenClient;
     let gapiInited = false;
@@ -147,11 +225,101 @@
         return;
       }
       // Flatten to string to display
-      const output = events.reduce(
-        (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`,
-        'Events:\n');
-      document.getElementById('content').innerText = output;
+      /*  const output = events.reduce(
+         (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`,
+         'Events:\n');
+       document.getElementById('content').innerText = output; */
+      //more styled output
+      const container = document.getElementById('content');
+      container.innerHTML = "";
+
+      events.forEach(event => {
+
+        const title = event.summary || "No Title";
+        const date = event.start.dateTime || event.start.date;
+
+        const eventHTML = `
+        <div class="event-card">
+            <div><strong>${title}</strong></div>
+            <div style="font-size:12px;color:gray;">
+                ${new Date(date).toLocaleString()}
+            </div>
+        </div>
+    `;
+
+        container.innerHTML += eventHTML;
+      });
     }
+    async function createCalendarEvent() {
+
+      console.log("Creating event...");
+      // Get values from UI
+      const title = document.getElementById("title").value;
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+      const attendee = document.getElementById("attendees").value;
+
+      // Validation
+      if (!title || !start || !end) {
+
+        alert("Please fill all required fields");
+        return;
+      }
+
+      // Event Object
+      const event = {
+
+        summary: title,
+
+        start: {
+          dateTime: new Date(start).toISOString(),
+          timeZone: 'Asia/Kolkata'
+        },
+
+        end: {
+          dateTime: new Date(end).toISOString(),
+          timeZone: 'Asia/Kolkata'
+        },
+
+        attendees: attendee
+          ? [{ email: attendee }]
+          : []
+
+      };
+
+      try {
+
+        // Create Event API Call
+        const request = await gapi.client.calendar.events.insert({
+
+          calendarId: 'primary',
+          resource: event
+
+        });
+
+        console.log(request);
+
+        alert("✅ Event Created Successfully");
+
+        // Refresh event list
+        listUpcomingEvents();
+
+        // Clear fields
+        document.getElementById("title").value = "";
+        document.getElementById("start").value = "";
+        document.getElementById("end").value = "";
+        document.getElementById("attendees").value = "";
+
+      }
+      catch (err) {
+
+        console.error(err);
+
+        alert("❌ Failed to create event");
+
+      }
+    }
+
     function goBack() {
       window.location.href = "index.html";
     }
